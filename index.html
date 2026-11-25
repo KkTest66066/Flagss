@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="تحدي الأعلام">
+<title>تحدي الأعلام</title>
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--tx:#1d2330;--mut:#6b7385;--ac:#e8590c;--ok:#2f9e44;--no:#e03131;--bd:#e2ddd2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--card:#1f2430;--tx:#f1f3f8;--mut:#9aa3b8;--ac:#ff8a3d;--ok:#51cf66;--no:#ff6b6b;--bd:#323949;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14171f;--card:#1f2430;--tx:#f1f3f8;--mut:#9aa3b8;--ac:#ff8a3d;--ok:#51cf66;--no:#ff6b6b;--bd:#323949;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh}
+#app{max-width:480px;margin:0 auto;padding:16px}
+h1{text-align:center;margin:8px 0 4px;font-size:28px}
+.sub{text-align:center;color:var(--mut);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+textarea{width:100%;height:90px;font:inherit;font-size:12px;padding:10px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);direction:ltr;margin:6px 0}
+input,select{width:100%;font:inherit;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);margin:6px 0}
+button{font:inherit;font-weight:600;width:100%;padding:14px;border-radius:12px;border:0;background:var(--ac);color:#fff;margin:6px 0;cursor:pointer}
+button.alt{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+button:disabled{opacity:.5}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.sc{display:flex;justify-content:space-between;gap:8px}
+.pl{flex:1;text-align:center;padding:8px;border-radius:12px;background:var(--bg);border:2px solid transparent}
+.pl.me{border-color:var(--ac)}.pl b{display:block;font-size:26px}
+.qt{font-size:20px;font-weight:700;text-align:center;line-height:1.7;margin:10px 0;min-height:90px;display:flex;flex-direction:column;justify-content:center;white-space:pre-line}.qt small{color:var(--ac);font-size:13px}
+.flag{font-size:110px;text-align:center;line-height:1.2;margin:8px 0}
+.info{display:flex;justify-content:space-between;color:var(--mut);font-size:14px}
+.opt{background:var(--card);color:var(--tx);border:2px solid var(--bd);font-size:17px}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.no{background:var(--no);color:#fff;border-color:var(--no)}
+.opt.pk{border-color:var(--ac)}
+.code{font-size:44px;letter-spacing:8px;text-align:center;font-weight:800;direction:ltr}
+.c{text-align:center}.mut{color:var(--mut)}
+.big{font-size:26px;font-weight:800;text-align:center;margin:8px 0}
+.err{color:var(--no);text-align:center}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const LIST="IQ:العراق,SA:السعودية,EG:مصر,JO:الأردن,LB:لبنان,SY:سوريا,PS:فلسطين,KW:الكويت,QA:قطر,AE:الإمارات,OM:عُمان,BH:البحرين,YE:اليمن,LY:ليبيا,TN:تونس,DZ:الجزائر,MA:المغرب,SD:السودان,TR:تركيا,IR:إيران,US:أمريكا,GB:بريطانيا,FR:فرنسا,DE:ألمانيا,IT:إيطاليا,ES:إسبانيا,PT:البرتغال,NL:هولندا,BE:بلجيكا,CH:سويسرا,SE:السويد,NO:النرويج,DK:الدنمارك,FI:فنلندا,RU:روسيا,UA:أوكرانيا,PL:بولندا,GR:اليونان,JP:اليابان,CN:الصين,KR:كوريا الجنوبية,IN:الهند,PK:باكستان,AF:أفغانستان,BD:بنغلاديش,ID:إندونيسيا,MY:ماليزيا,TH:تايلند,VN:فيتنام,PH:الفلبين,AU:أستراليا,NZ:نيوزيلندا,CA:كندا,MX:المكسيك,BR:البرازيل,AR:الأرجنتين,CL:تشيلي,CO:كولومبيا,PE:بيرو,VE:فنزويلا,CU:كوبا,ZA:جنوب أفريقيا,NG:نيجيريا,KE:كينيا,ET:إثيوبيا,GH:غانا,SN:السنغال,SO:الصومال".split(",").map(s=>s.split(":"));
+"AD:أندورا,AG:أنتيغوا وباربودا,AL:ألبانيا,AM:أرمينيا,AO:أنغولا,AT:النمسا,AZ:أذربيجان,BA:البوسنة والهرسك,BB:باربادوس,BF:بوركينا فاسو,BG:بلغاريا,BI:بوروندي,BJ:بنين,BN:بروناي,BO:بوليفيا,BS:جزر البهاما,BT:بوتان,BW:بوتسوانا,BY:بيلاروسيا,BZ:بليز,CD:الكونغو الديمقراطية,CF:أفريقيا الوسطى,CG:الكونغو,CI:ساحل العاج,CM:الكاميرون,CV:الرأس الأخضر,CY:قبرص,CZ:التشيك,DJ:جيبوتي,DM:دومينيكا,DO:جمهورية الدومينيكان,EC:الإكوادور,EE:إستونيا,ER:إريتريا,FJ:فيجي,FM:ميكرونيزيا,GA:الغابون,GD:غرينادا,GE:جورجيا,GM:غامبيا,GN:غينيا,GQ:غينيا الاستوائية,GT:غواتيمالا,GW:غينيا بيساو,GY:غيانا,HN:هندوراس,HR:كرواتيا,HT:هايتي,HU:المجر,IE:أيرلندا,IS:آيسلندا,JM:جامايكا,KG:قيرغيزستان,KH:كمبوديا,KI:كيريباتي,KM:جزر القمر,KN:سانت كيتس ونيفيس,KZ:كازاخستان,LA:لاوس,LC:سانت لوسيا,LI:ليختنشتاين,LK:سريلانكا,LR:ليبيريا,LS:ليسوتو,LT:ليتوانيا,LU:لوكسمبورغ,LV:لاتفيا,MC:موناكو,MD:مولدوفا,ME:الجبل الأسود,MG:مدغشقر,MH:جزر مارشال,MK:مقدونيا الشمالية,ML:مالي,MM:ميانمار,MN:منغوليا,MR:موريتانيا,MT:مالطا,MU:موريشيوس,MV:المالديف,MW:ملاوي,MZ:موزمبيق,NA:ناميبيا,NE:النيجر,NI:نيكاراغوا,NP:نيبال,NR:ناورو,PA:بنما,PG:بابوا غينيا الجديدة,PW:بالاو,PY:باراغواي,RO:رومانيا,RS:صربيا,RW:رواندا,SB:جزر سليمان,SC:سيشل,SG:سنغافورة,SI:سلوفينيا,SK:سلوفاكيا,SL:سيراليون,SM:سان مارينو,SR:سورينام,SS:جنوب السودان,ST:ساو تومي وبرينسيبي,SV:السلفادور,SZ:إسواتيني,TD:تشاد,TG:توغو,TJ:طاجيكستان,TL:تيمور الشرقية,TM:تركمانستان,TO:تونغا,TT:ترينيداد وتوباغو,TV:توفالو,TZ:تنزانيا,UG:أوغندا,UY:الأوروغواي,UZ:أوزبكستان,VC:سانت فنسنت والغرينادين,VU:فانواتو,WS:ساموا,XK:كوسوفو,ZM:زامبيا,ZW:زيمبابوي".split(",").map(s=>s.split(":")).forEach(x=>{if(!LIST.some(y=>y[0]===x[0]))LIST.push(x)});
+const NAME=Object.fromEntries(LIST);
+const CODES=LIST.map(x=>x[0]);
+const FAM="IQ SA EG JO LB SY PS KW QA AE TR IR US GB FR DE IT ES PT NL BE CH SE RU JP CN KR IN BR AR MX CA AU".split(" ");
+const QC=CODES.filter(c=>!FAM.includes(c));
+const GR=[["ID","MC","PL","SG"],["RO","TD","AD","MD"],["AU","NZ","FJ","TV"],["NL","LU","HR","PY"],["SK","SI","RU","RS"],["SN","ML","GN","GH","CM"],["CO","EC","VE"],["GT","HN","SV","NI"],["AT","LV","PE","LB"],["CI","IE","IT","MX"],["DM","GD","LC","VC"],["TJ","KG","UZ","TM"],["BF","ST","GW","MZ"],["SD","YE","EG","SY"]];
+let exitT=0;
+function exitTap(){if(!S)return;if(S.ph==="lobby"||Date.now()-exitT<3000){exitT=0;leave()}else{exitT=Date.now();draw();setTimeout(()=>{if(S)draw()},3100)}}
+const fl=c=>String.fromCodePoint(...[...c].map(ch=>127397+ch.charCodeAt(0)));
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const $=document.getElementById("app");
+const TIME=12;
+let role=null,room=null,S=null,myPick=null,lastRound=0,A={},T0=0,tick=null,used=[],msg="",myName="",solo=false,guestPeer=null,helloT=null,bcT=null;
+
+function menu(){
+  S=null;role=null;solo=false;
+  $.innerHTML=`<h1>🚩 تحدي الأعلام</h1><p class="sub">لعبتين بملف واحد: أعلام وأسئلة</p>
+  <div class="card"><input id="nm" placeholder="اسمك" maxlength="14" value="${esc(myName)}"><select id="gm" onchange="catVis()"><option value="flag">🚩 لعبة أعلام الدول</option><option value="quiz">❓ لعبة الأسئلة</option></select><select id="ct" style="display:none"><option value="all">كل المجالات (عشوائي)</option><option value="sci">🔬 علمية</option><option value="his">📜 تاريخية</option><option value="sp">⚽ رياضية</option><option value="misc">🌍 منوعة</option><option value="foc">🧠 تركيز</option></select>
+  <div class="mut" style="margin-top:6px">شرط الفوز (انت تحدد)</div><div class="row"><select id="md" onchange="document.getElementById('tg').value=this.value==='pts'?50:10"><option value="pts">أول واحد يوصل نقاط</option><option value="rd">عدد محاولات</option></select><input id="tg" type="number" inputmode="numeric" min="1" max="1000" value="50"></div>
+  <button onclick="startSolo()">لعب فردي</button>
+  <button onclick="hostGame()">أفتح سيرفر وأتحدى صديقي</button></div>
+  <div class="card"><div class="c mut">وصلك رابط من صديقك؟</div><textarea id="oc" placeholder="الصق رابط صديقك هنا">${esc((location.hash.match(/j=(kkf[a-z0-9]{8})/)||["",""])[1])}</textarea><button class="alt" onclick="joinGame()">أدخل السيرفر</button></div>
+  <div class="err">${esc(msg)}</div>`;
+}
+function getCfg(){
+  myName=(document.getElementById("nm").value||"").trim()||"لاعب";
+  const m=document.getElementById("md").value;let t=parseInt(document.getElementById("tg").value);if(!(t>0))t=m==="pts"?50:10;t=Math.min(t,m==="pts"?1000:200);return {mode:m,target:t,game:document.getElementById("gm").value,cat:document.getElementById("ct").value};
+}
+function base(cfg){return {ph:"lobby",game:cfg.game,cat:cfg.cat,mode:cfg.mode,target:cfg.target,round:0,left:TIME,q:null,P:{h:{name:myName,score:0}},ans:{},res:null,winner:null}}
+function startSolo(){const cfg=getCfg();solo=true;role="h";S=base(cfg);used=[];nextQ()}
+let peer=null,cn=null,offerLink="",netMsg="";
+const lab=k=>S&&S.q&&S.q.txt?k:NAME[k];
+function send(t,d){try{if(cn&&cn.open)cn.send({t,d})}catch(e){}}
+function bc(){if(role==="h")send("state",S)}
+function wire(c){
+  cn=c;
+  const op=()=>{netMsg="تم الاتصال ✅";if(role==="g")send("hello",{name:myName});draw()};
+  c.on("open",op);if(c.open)op();
+  c.on("data",onMsg);
+  c.on("close",()=>{netMsg="الخصم طلع من اللعبة";if(S)draw()});
+}
+function onMsg(m){
+  if(!m||typeof m!=="object")return;
+  if(role==="h"){
+    if(m.t==="hello"){const n=String((m.d&&m.d.name)||"لاعب").slice(0,14);S.P.g={name:n,score:(S.P.g||{}).score||0};netMsg="";bc();draw()}
+    else if(m.t==="ans"&&m.d)onAns("g",String(m.d.c),m.d.r);
+  }else if(m.t==="state"&&m.d&&typeof m.d==="object"){S=m.d;if(S.round!==lastRound){lastRound=S.round;myPick=null}draw()}
+}
+async function hostGame(){
+  const cfg=getCfg();msg="";role="h";solo=false;S=base(cfg);used=[];offerLink="";netMsg="جاري تحضير الرابط…";
+  if(!window.Peer){msg="تعذر تحميل مكتبة الاتصال، تأكد من الإنترنت";return menu()}
+  const id="kkf"+Math.random().toString(36).slice(2,10).padEnd(8,"0");
+  peer=new Peer(id);
+  peer.on("open",()=>{offerLink=location.href.split("#")[0]+"#j="+id;netMsg="";draw()});
+  peer.on("connection",c=>{if(cn&&cn.open){c.close();return}wire(c)});
+  peer.on("error",e=>{netMsg="مشكلة بالاتصال بالسيرفر العام ("+(e.type||"?")+")، جرب مرة ثانية";draw()});
+  draw();clearInterval(bcT);bcT=setInterval(bc,1000);
+}
+async function joinGame(){
+  myName=(document.getElementById("nm").value||"").trim()||"لاعب";msg="";
+  const m=(document.getElementById("oc").value||"").match(/kkf[a-z0-9]{8}/);
+  if(!m){msg="الصق رابط صديقك";return menu()}
+  if(!window.Peer){msg="تعذر تحميل مكتبة الاتصال، تأكد من الإنترنت";return menu()}
+  role="g";solo=false;S=null;netMsg="";
+  $.innerHTML=`<h1>🚩</h1><p class="sub">جاري الاتصال بصديقك…</p><button class="alt" onclick="leave()">رجوع</button>`;
+  peer=new Peer();
+  const fail=()=>{if(role==="g"&&!S){leave();msg="ما قدرت أتصل، تأكد أن صديقك فاتح السيرفر وجرب مرة ثانية";menu()}};
+  peer.on("open",()=>{wire(peer.connect(m[0],{reliable:true,serialization:"json"}));setTimeout(fail,15000)});
+  peer.on("error",fail);
+}
+async function shareLink(){
+  const el=document.getElementById("lk");if(!el)return;const txt="تعال العب وياي تحدي 🚩\n"+el.value;
+  try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==="AbortError")return}
+  const cp=document.getElementById("cp");
+  try{await navigator.clipboard.writeText(txt);if(cp)cp.textContent="تم النسخ ✅ الصقه بالواتساب"}catch(e){el.focus();el.select();if(cp)cp.textContent="انسخ من الخانة فوق"}
+}
+function leave(){clearInterval(tick);clearInterval(bcT);try{cn&&cn.close()}catch(e){}try{peer&&peer.destroy()}catch(e){}cn=peer=null;S=null;menu()}
+function flagQ(){const c=pick();const o=[c];(GR.find(a=>a.includes(c))||[]).filter(x=>x!==c).sort(()=>Math.random()-.5).slice(0,2).forEach(x=>o.push(x));while(o.length<4){const x=CODES[Math.floor(Math.random()*CODES.length)];if(!o.includes(x))o.push(x)}o.sort(()=>Math.random()-.5);return {c,o}}
+function catVis(){document.getElementById("ct").style.display=document.getElementById("gm").value==="quiz"?"block":"none"}
+function pick(){let c;do{c=QC[Math.floor(Math.random()*QC.length)]}while(used.includes(c)&&used.length<QC.length);used.push(c);return c}
+const R=n=>Math.floor(Math.random()*n);
+const sh=a=>a.map(x=>[Math.random(),x]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const pk=a=>a[R(a.length)];
+const qUsed=new Set();
+const LRI="\u2066",PDI="\u2069";
+function tq(t,ans,wrong,cat){const o=[ans];sh([...new Set(wrong)].filter(x=>x!==ans)).slice(0,3).forEach(x=>o.push(x));return {txt:1,cat,t,c:ans,o:sh(o)}}
+function nq(t,ans,cat){const o=new Set([ans]);let g=0;while(o.size<4&&g++<60){const d=(R(9)+1)*(R(2)?1:-1)*(ans>40?pk([1,1,2,5,10]):1);const v=ans+d;if(v>=0)o.add(v)}return {txt:1,cat,t,c:String(ans),o:sh([...o].map(String))}}
+function bank(L,cat){const x=pk(L).split("|");return tq(x[0],x[1],x.slice(2),cat)}
+function pairs(s){return s.split(",").map(x=>x.split(":"))}
+const EL=pairs("H:الهيدروجين,He:الهيليوم,C:الكربون,N:النيتروجين,O:الأكسجين,Na:الصوديوم,Mg:المغنيسيوم,Al:الألمنيوم,Si:السيليكون,P:الفوسفور,S:الكبريت,Cl:الكلور,K:البوتاسيوم,Ca:الكالسيوم,Fe:الحديد,Cu:النحاس,Zn:الزنك,Ag:الفضة,Sn:القصدير,Au:الذهب,Hg:الزئبق,Pb:الرصاص,U:اليورانيوم");
+function qEl(){const e=pk(EL);return R(2)?tq("ما الرمز الكيميائي لعنصر "+e[1]+"؟",e[0],EL.map(x=>x[0]),"علوم"):tq("أي عنصر رمزه "+LRI+e[0]+PDI+"؟",e[1],EL.map(x=>x[1]),"علوم")}
+const PL=["عطارد","الزهرة","الأرض","المريخ","المشتري","زحل","أورانوس","نبتون"];
+function qPl(){const i=R(8);return R(2)?nq("الكوكب رقم "+(i+1)+" من الشمس هو؟",0,"علوم"):nq("ما ترتيب كوكب "+PL[i]+" من الشمس؟",i+1,"علوم")}
+function qPl2(){const i=R(8);return R(2)?tq("ما الكوكب رقم "+(i+1)+" بعدًا عن الشمس؟",PL[i],PL,"علوم"):nq("ما ترتيب كوكب "+PL[i]+" من الشمس؟",i+1,"علوم")}
+const SCI=["كم عدد عظام جسم الإنسان البالغ؟|206|212|198|300","ما الغاز الذي تمتصه النباتات في التمثيل الضوئي؟|ثاني أكسيد الكربون|الأكسجين|النيتروجين|الهيدروجين","ما أصلب مادة طبيعية؟|الألماس|الحديد|الكوارتز|الجرانيت","كم عدد قلوب الأخطبوط؟|3|1|2|8","ما العضو المسؤول عن ضخ الدم؟|القلب|الكبد|الرئة|الكلية","ما سرعة الضوء تقريبًا بالكيلومتر في الثانية؟|300 ألف|150 ألف|30 ألف|3 ملايين","ما درجة غليان الماء عند مستوى البحر بالسيليزية؟|100|90|120|80","ما أسرع حيوان بري؟|الفهد|الأسد|الحصان|الغزال","ما المعدن السائل في درجة حرارة الغرفة؟|الزئبق|الرصاص|القصدير|الألمنيوم","كم عدد أسنان الإنسان البالغ؟|32|28|30|36","أي فيتامين تنتجه البشرة بالتعرض للشمس؟|فيتامين د|فيتامين ج|فيتامين أ|فيتامين ب12","ما أكبر عضو في جسم الإنسان؟|الجلد|الكبد|الدماغ|الرئتان","ما الكوكب الملقب بالكوكب الأحمر؟|المريخ|الزهرة|المشتري|عطارد","من صاحب قوانين الحركة والجاذبية؟|نيوتن|أينشتاين|غاليليو|ديكارت","ما وحدة قياس القدرة الكهربائية؟|واط|فولت|أمبير|أوم","كم عدد كواكب المجموعة الشمسية؟|8|9|7|10","ما الصيغة الكيميائية للماء؟|H2O|CO2|O2|NaCl","ما أكبر كوكب في المجموعة الشمسية؟|المشتري|زحل|نبتون|الأرض","أي جزء من النبات يمتص الماء من التربة؟|الجذور|الأوراق|الساق|الأزهار","ما الغاز الأكثر وجودًا في الغلاف الجوي للأرض؟|النيتروجين|الأكسجين|الأرغون|ثاني أكسيد الكربون"];
+const EV=pairs("سقوط بغداد على يد المغول:1258,فتح القسطنطينية:1453,تأسيس مدينة بغداد:762,معركة القادسية:636,معركة حطين:1187,الثورة الفرنسية:1789,هبوط الإنسان على القمر:1969,سقوط جدار برلين:1989,بداية الحرب العالمية الأولى:1914,بداية الحرب العالمية الثانية:1939,نهاية الحرب العالمية الثانية:1945,وصول كولومبوس إلى أمريكا:1492,قيام الجمهورية في العراق:1958,إعلان استقلال الولايات المتحدة:1776,معركة عين جالوت:1260,الهجرة النبوية:622,فتح الأندلس:711,أول طيران للأخوين رايت:1903,انهيار الاتحاد السوفييتي:1991,اكتشاف البنسلين:1928,غرق سفينة تيتانيك:1912,تأسيس الدولة العباسية:750,فتح مكة:630,أول إنسان في الفضاء (غاغارين):1961,اختراع الهاتف:1876,افتتاح قناة السويس:1869");
+function qEv(){const e=pk(EV),y=+e[1];const o=new Set([y]);while(o.size<4)o.add(y+(R(2)?1:-1)*(R(6)+1)*pk([3,5,10]));return {txt:1,cat:"تاريخ",t:"في أي سنة حدث: "+e[0]+"؟",c:String(y),o:sh([...o].map(String))}}
+const HIS=["من هو أول الخلفاء الراشدين؟|أبو بكر الصديق|عمر بن الخطاب|عثمان بن عفان|علي بن أبي طالب","من قائد معركة حطين؟|صلاح الدين الأيوبي|نور الدين زنكي|الظاهر بيبرس|سيف الدين قطز","من مؤسس مدينة بغداد؟|أبو جعفر المنصور|هارون الرشيد|المأمون|المعتصم","من فتح القسطنطينية عام 1453؟|محمد الفاتح|سليم الأول|سليمان القانوني|مراد الثاني","من أول رئيس للولايات المتحدة؟|جورج واشنطن|أبراهام لنكولن|توماس جيفرسون|جون آدمز","من قائد المسلمين في معركة القادسية؟|سعد بن أبي وقاص|خالد بن الوليد|عمرو بن العاص|أبو عبيدة","من معلم الإسكندر الأكبر؟|أرسطو|أفلاطون|سقراط|ابن سينا","من قائد معركة عين جالوت؟|سيف الدين قطز|صلاح الدين|هولاكو|الظاهر بيبرس","أي حضارة بنت الأهرامات؟|المصرية القديمة|البابلية|الرومانية|الفارسية","من مؤلف كتاب (المقدمة) في علم الاجتماع؟|ابن خلدون|ابن رشد|الفارابي|ابن بطوطة","في أي مدينة ازدهر بيت الحكمة؟|بغداد|دمشق|القاهرة|قرطبة","من شرّع القوانين الشهيرة في بابل؟|حمورابي|نبوخذ نصر|سرجون|آشوربانيبال"];
+const WC=pairs("1930:الأوروغواي,1934:إيطاليا,1938:إيطاليا,1950:الأوروغواي,1954:ألمانيا,1958:البرازيل,1962:البرازيل,1966:إنجلترا,1970:البرازيل,1974:ألمانيا,1978:الأرجنتين,1982:إيطاليا,1986:الأرجنتين,1990:ألمانيا,1994:البرازيل,1998:فرنسا,2002:البرازيل,2006:إيطاليا,2010:إسبانيا,2014:ألمانيا,2018:فرنسا,2022:الأرجنتين");
+function qWc(){const e=pk(WC);return tq("من الفائز بكأس العالم لكرة القدم سنة "+e[0]+"؟",e[1],["البرازيل","ألمانيا","إيطاليا","الأرجنتين","فرنسا","إسبانيا","الأوروغواي","إنجلترا","هولندا","كرواتيا"],"رياضة")}
+const OL=pairs("1984:لوس أنجلوس,1988:سيول,1992:برشلونة,1996:أتلانتا,2000:سيدني,2004:أثينا,2008:بكين,2012:لندن,2016:ريو دي جانيرو");
+function qOl(){const e=pk(OL);return tq("أي مدينة استضافت أولمبياد "+e[0]+"؟",e[1],OL.map(x=>x[1]).concat(["طوكيو","باريس","موسكو","ميونخ"]),"رياضة")}
+const SP=["كم لاعبًا في فريق كرة القدم داخل الملعب؟|11|10|12|9","كم عدد لاعبي فريق كرة السلة داخل الملعب؟|5|6|7|4","كم مدة مباراة كرة القدم الرسمية بالدقائق؟|90|80|100|120","كم عدد حلقات شعار الأولمبياد؟|5|4|6|7","كل كم سنة تقام بطولة كأس العالم؟|4|2|3|5","ما اسم ملعب نادي ريال مدريد؟|سانتياغو برنابيو|كامب نو|أولد ترافورد|الاتحاد","في أي بلد نشأت رياضة الجودو؟|اليابان|الصين|كوريا|تايلند","من اللاعب الأكثر فوزًا بالكرة الذهبية؟|ليونيل ميسي|كريستيانو رونالدو|بيليه|ميشيل بلاتيني","في أي رياضة يُستخدم الشبك والريشة؟|الريشة الطائرة|التنس|الاسكواش|التنس الأرضي","كم عدد اللاعبين في فريق الكرة الطائرة داخل الملعب؟|6|5|7|9","كم نقطة يحصل عليها الفريق من الرمية الثلاثية في كرة السلة؟|3|2|4|5","في أي رياضة يُمنح الحزام الأسود؟|الكاراتيه|السباحة|التنس|الجمباز"];
+const CP=pairs("العراق:بغداد,السعودية:الرياض,مصر:القاهرة,الأردن:عمّان,لبنان:بيروت,سوريا:دمشق,الكويت:مدينة الكويت,قطر:الدوحة,الإمارات:أبوظبي,عُمان:مسقط,البحرين:المنامة,اليمن:صنعاء,ليبيا:طرابلس,تونس:تونس,الجزائر:الجزائر,المغرب:الرباط,السودان:الخرطوم,تركيا:أنقرة,إيران:طهران,أمريكا:واشنطن,بريطانيا:لندن,فرنسا:باريس,ألمانيا:برلين,إيطاليا:روما,إسبانيا:مدريد,البرتغال:لشبونة,هولندا:أمستردام,بلجيكا:بروكسل,سويسرا:برن,السويد:ستوكهولم,النرويج:أوسلو,الدنمارك:كوبنهاغن,فنلندا:هلسنكي,روسيا:موسكو,أوكرانيا:كييف,بولندا:وارسو,اليونان:أثينا,اليابان:طوكيو,الصين:بكين,كوريا الجنوبية:سيول,الهند:نيودلهي,باكستان:إسلام آباد,أستراليا:كانبرا,كندا:أوتاوا,البرازيل:برازيليا,الأرجنتين:بوينس آيرس,المكسيك:مدينة مكسيكو,كوبا:هافانا,كينيا:نيروبي,إثيوبيا:أديس أبابا,نيجيريا:أبوجا,تشيلي:سانتياغو,بيرو:ليما,كولومبيا:بوغوتا,النمسا:فيينا,المجر:بودابست,التشيك:براغ,رومانيا:بوخارست,أيرلندا:دبلن,أفغانستان:كابول,إندونيسيا:جاكرتا,ماليزيا:كوالالمبور,تايلند:بانكوك,فيتنام:هانوي,الفلبين:مانيلا,نيوزيلندا:ويلينغتون");
+function qCap(){const e=pk(CP);return R(3)?tq("ما عاصمة "+e[0]+"؟",e[1],CP.map(x=>x[1]),"منوعة"):tq(e[1]+" هي عاصمة أي دولة؟",e[0],CP.map(x=>x[0]),"منوعة")}
+const MS=["ما أكبر محيط في العالم؟|الهادئ|الأطلسي|الهندي|المتجمد الشمالي","كم عدد ألوان قوس قزح؟|7|6|8|5","ما أكبر قارة بالمساحة؟|آسيا|أفريقيا|أمريكا الشمالية|أوروبا","كم يومًا في السنة الكبيسة؟|366|365|364|367","ما اللغة الرسمية في البرازيل؟|البرتغالية|الإسبانية|الإنجليزية|الفرنسية","ما أعلى جبل في العالم؟|إفرست|كي 2|كليمنجارو|مون بلان","ما أصغر دولة في العالم مساحة؟|الفاتيكان|موناكو|سان مارينو|ناورو","ما العملة الرسمية لليابان؟|الين|اليوان|الوون|الدولار","أي بحر يقع بين السعودية والسودان ومصر؟|الأحمر|الأسود|المتوسط|الميت","كم عدد حروف اللغة العربية؟|28|26|30|29","ما أكبر صحراء حارة في العالم؟|الصحراء الكبرى|الربع الخالي|غوبي|كالاهاري","ما أطول برج في العالم؟|برج خليفة|برج شنغهاي|برج إيفل|أبراج بتروناس","كم عدد أيام الأسبوع؟|7|6|8|5","ما الحيوان الملقب بسفينة الصحراء؟|الجمل|الحصان|الفيل|الحمار","ما عدد القارات في العالم؟|7|5|6|8"];
+function qMath(){const o=R(3);let a,b,t,ans;if(o===0){a=R(80)+12;b=R(80)+12;ans=a+b;t=a+" + "+b}else if(o===1){a=R(80)+30;b=R(a-5)+3;ans=a-b;t=a+" − "+b}else{a=R(11)+3;b=R(11)+3;ans=a*b;t=a+" × "+b}return nq("كم ناتج:\n"+LRI+t+PDI+" ؟",ans,"تركيز")}
+function qSeq(){let s=R(9)+1,a=[],ans;if(R(2)){const d=R(7)+2;for(let i=0;i<4;i++)a.push(s+d*i);ans=s+d*4}else{const r=pk([2,3]);let v=R(3)+1;for(let i=0;i<4;i++){a.push(v);v*=r}ans=v}return nq("كمّل السلسلة:\n"+LRI+a.join("  ،  ")+"  ،  ؟"+PDI,ans,"تركيز")}
+function qCnt(){const I=["🍎","⭐","🔵","🍌"],tg=pk(I);let row,n;do{row=Array.from({length:12+R(8)},()=>pk(I));n=row.filter(x=>x===tg).length}while(n<2||n>8);return nq("كم عدد "+tg+" بالسطر؟\n"+row.join(" "),n,"تركيز")}
+function qBig(){const s=new Set();while(s.size<4)s.add(R(90)+10);const a=[...s],mx=R(2);const ans=mx?Math.max(...a):Math.min(...a);return {txt:1,cat:"تركيز",t:mx?"أي هذه الأرقام هو الأكبر؟":"أي هذه الأرقام هو الأصغر؟",c:String(ans),o:a.map(String)}}
+const GEN={sci:[qEl,qPl2,()=>bank(SCI,"علوم"),()=>bank(SCI,"علوم")],his:[qEv,()=>bank(HIS,"تاريخ")],sp:[qWc,qOl,()=>bank(SP,"رياضة")],misc:[qCap,()=>bank(MS,"منوعة")],foc:[qMath,qSeq,qCnt,qBig]};
+function genQ(c){let q,k=0;do{q=pk(GEN[c==="all"?pk(Object.keys(GEN)):c])();k++}while(qUsed.has(q.t)&&k<15);qUsed.add(q.t);return q}
+
+function nextQ(){
+  if(S.round===0)qUsed.clear();
+  S.round++;S.ph="q";S.q=S.game==="quiz"?genQ(S.cat):flagQ();S.left=S.game==="quiz"?15:TIME;S.ans={};S.res=null;A={};T0=Date.now();myPick=null;lastRound=S.round;
+  clearInterval(tick);tick=setInterval(()=>{S.left--;if(S.left<=0)reveal();else{bc();draw()}},1000);
+  bc();draw();
+}
+function onAns(w,c,r){
+  if(!S||S.ph!=="q"||r!==S.round||A[w]||!S.P[w])return;
+  A[w]={c,t:Date.now()-T0};S.ans[w]=1;
+  if(Object.keys(S.P).every(k=>A[k]))reveal();else{bc();draw()}
+}
+function mine(i){const c=S&&S.q&&S.q.o[i];if(c===undefined)return;if(role==="g"){if(myPick)return;myPick=c;draw();send("ans",{r:S.round,c})}else{myPick=c;onAns("h",c,S.round)}}
+function reveal(){
+  clearInterval(tick);const ks=Object.keys(S.P),right=S.q.c;
+  const ok=ks.filter(k=>A[k]&&A[k].c===right);
+  S.res={};
+  ks.forEach(k=>{let g=0;if(ok.includes(k)){g=10;if(ok.length>1&&ok.every(o=>o===k||A[k].t<A[o].t))g+=5}
+    S.P[k].score+=g;S.res[k]={c:A[k]?A[k].c:null,g}});
+  S.ph="r";
+  const top=Math.max(...ks.map(k=>S.P[k].score));
+  const over=S.mode==="pts"?top>=S.target:S.round>=S.target;
+  bc();draw();
+  setTimeout(()=>{if(!S||S.ph!=="r")return;if(over)finish();else nextQ()},3500);
+}
+function finish(){
+  const ks=Object.keys(S.P);let w="draw";
+  if(ks.length===1)w="h";else if(S.P.h.score>S.P.g.score)w="h";else if(S.P.g.score>S.P.h.score)w="g";
+  S.ph="e";S.winner=w;bc();draw();
+}
+function again(){Object.values(S.P).forEach(p=>p.score=0);S.round=0;used=[];nextQ()}
+function draw(){
+  if(!S)return;
+  const ks=Object.keys(S.P);
+  const sc=`<div class="card"><div class="sc">${ks.map(k=>`<div class="pl ${k===role?"me":""}"><span>${esc(S.P[k].name)}${k===role?" (أنت)":""}</span><b>${S.P[k].score}</b></div>`).join("")}</div>
+  <div class="info" style="margin-top:8px"><span>${S.ph==="lobby"?"":"جولة "+S.round+(S.mode==="rd"?" / "+S.target:"")}</span><span>${S.mode==="pts"?"الهدف: "+S.target+" نقطة":S.target+" محاولات"}</span></div></div>`;
+  let h="";
+  if(S.ph==="lobby"){
+    h=`<div class="card c">${role==="h"&&!solo?`${offerLink?`<p class="mut">ارسل هذا الرابط لصديقك، وبمجرد ما يفتحه ويدخل تبدأ اللعبة:</p><textarea id="lk" readonly onclick="this.select()">${esc(offerLink)}</textarea><button onclick="shareLink()">📤 دز الرابط لصديقك</button><div id="cp" class="c mut"></div>`:""}<div class="c mut">${esc(netMsg)}</div>`:""}
+    <div>${ks.map(k=>`<div>✅ ${esc(S.P[k].name)}</div>`).join("")}${ks.length<2?'<div class="mut">بانتظار اللاعب الثاني…</div>':""}</div>
+    ${role==="h"?`<button onclick="nextQ()" ${ks.length<2?"disabled":""}>ابدأ التحدي</button>`:'<p class="mut">بانتظار صاحب السيرفر يبدأ…</p>'}</div>`;
+  }else if(S.ph==="q"||S.ph==="r"){
+    const r=S.ph==="r",q=S.q,mp=role==="g"?myPick:(S.res?S.res[role].c:myPick);
+    const my=r?(S.res[role]||{}).c:myPick;
+    h=`<div class="card"><div class="info"><span>${r?"النتيجة":"⏱ "+S.left+" ث"}</span><span>${!r&&S.ans[role]?"جاوبت ✔":""}</span></div>${q.txt?`<div class="qt"><small>${esc(q.cat)}</small>${esc(q.t)}</div>`:`<div class="flag">${fl(q.c)}</div>`}
+    ${q.o.map((c,i)=>{let cl="opt";if(r){if(c===q.c)cl+=" ok";else if(c===my)cl+=" no"}else if(c===my)cl+=" pk";
+      return `<button class="${cl}" ${r||myPick?"disabled":""} onclick="mine(${i})">${esc(lab(c))}</button>`}).join("")}
+    ${r?`<div class="c" style="margin-top:8px">${ks.map(k=>`<div>${esc(S.P[k].name)}: ${S.res[k].c?esc(lab(S.res[k].c)):"ما جاوب"} <b style="color:${S.res[k].g?"var(--ok)":"var(--no)"}">+${S.res[k].g}</b></div>`).join("")}</div>`:(!S.ans[role]||ks.length<2?"":"")+(S.ans[role]&&ks.length>1?'<p class="c mut">بانتظار الخصم…</p>':"")}</div>`;
+  }else{
+    const w=S.winner;let t=w==="draw"?"🤝 تعادل!":ks.length===1?"🎉 خلصت! نتيجتك "+S.P.h.score:(w===role?"🏆 فزت!":"😅 خسرت، فاز "+esc(S.P[w].name));
+    h=`<div class="card"><div class="big">${t}</div>${role==="h"?'<button onclick="again()">جولة ثانية</button>':'<p class="c mut">بانتظار صاحب السيرفر…</p>'}<button class="alt" onclick="leave()">القائمة الرئيسية</button></div>`;
+  }
+  $.innerHTML=`<h1>${S.game==="quiz"?"❓ تحدي الأسئلة":"🚩 تحدي الأعلام"}</h1>`+(netMsg.startsWith("الخصم")?`<div class="err">${esc(netMsg)}</div>`:"")+sc+h+(S.ph!=="e"?`<button class="alt" onclick="exitTap()">${S.ph!=="lobby"&&Date.now()-exitT<3000?"اضغط مرة ثانية للتأكيد":"خروج"}</button>`:"");
+}
+menu();
+</script>
+</body>
+</html>
